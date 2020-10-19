@@ -1,12 +1,13 @@
 ---
 title: "Report of General social survey on Family (cycle 31), 2017"
-author: "Cunmiao Hu; Chengyue Xue; Rubing Mai"
-date: "2020-10-19"
+author: "Cunmiao Hu 1004739688; Chengyue Xue 1004761484; Rubing Mai 1004802467"
+date: '2020-10-19'
 output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+library('tidyverse')
 ```
 
 ##Statistical Report of “General social survey on Family (cycle 31), 2017”
@@ -60,8 +61,6 @@ Independent variables:
 
 ## Model
 ```{r}
-library('tidyverse')
-
 gss <- read_csv("gss.csv")
 df <- gss %>%
   select(feelings_life, total_children, age, sex, income_respondent) %>%
@@ -89,56 +88,102 @@ df %>%
 The model we choose for this data set is a linear model with multiple regressions. By using this model, we will be able to find the linear relationship between one indicator-variable and several predictor-variables. Different from a simple linear regression model，the multiple regression model can combine two or more explanatory variables in one model and see how they affect the response variable.The reason why we choose number of children, age, sex, income_respondent as predictor variables is that we think these factors are strongly linked to how we feeling about our life. From the model, the coefficients of the total of children and age are positive, which means these factors have a positive relationship with feelings of life. 
 
 $$Feelings.of.life = 8.1753027+0.0808956\beta_1+0.0013695\beta_2-0.1142954\beta_3+0.1976677\beta4-0.2556258\beta_5-0.1249853\beta_6-0.0127139\beta_7-0.4362002\beta_8$$
+
 $H_0$: $\beta_0$ = 0
+
 $H_a$: $\beta_0$ != 0
 
 1. 
+
 $\b_0$ represents the intercept of the fitted linear regression line. Specifically, when all values of predictor variables, x1,x2,x3,x4 are 0, the average value of feelings of life will be 8.1753027.
+
 $\b_1$ represents the coefficient of the first independent variable, total_children; It means when the number of children increases 1 unit, the feelings of life score will increase 0.0808956 units on average, given other predictors hold constant. 
+
 $\b_2$ represents the coefficient of the second independent variable, age; It means when age increases 1 unit, feelings of life will increase 0.0013695 units on average, given other predictors hold constant.
+
 $\b_3$ represents the coefficient of feelings of life scores for male. It means the difference in average value of Yi between female and male groups. It’s -0.1142954, so we can tell that the females’ average feelings of score is higher than male 's about 0.1142954 units. 
+
 $\b_4$ represents the coefficient of the income_responent $125,000 and more. The value is 0.1976677 which means the difference in average value of Yi between this group and other groups.
+
 $\b_5$ represents the coefficient of the income_responent $25,000 to 49.999. The value is -0.2556258 which means the difference in average value of Yi between this group and other groups.
+
 $\b_6$ represents the coefficient of the income_responent $50,000 to 74.999. The value is -0.249853 which means the difference in average value of Yi between this group and other groups. 
+
 $\b_7$  represents the coefficient of the income_responent $75,000 to 99.999. The value is -0.0127139 which means the difference in average value of Yi between this group and other groups.
+
 $\b_8$ represents the coefficient of the income_responent less than 25,000. The value is -0.4362002 which means the difference in average value of Yi between this group and other groups.
 
 2.
 Hypothesis test for $\beta_0$:
+
 $H_0$: $\beta_0$ = 0  
+
 $H_a$: $\beta_0$ != 0 
+
 P-value is less than 2e-16, then can support $H_0$, which means $\beta_0$ is 0.
+
 Hypothesis test for $\beta_1$:
+
 $H_0$: $\beta_1$ = 0
+
 $H_a$: $\beta_1$ != 0
+
 P-value is 2e-16, then fails to reject $H_0$, which means $\beta_1$ is not 0.
+
 Hypothesis test for $\beta_2$:
+
 $H_0$: $\beta_2$ = 0
+
 $H_a$: $\beta_2$ != 0
+
 P-value is 0.0583 then it does not reject $H_0$, which means $\beta_2$ is 0.
+
 Hypothesis test for $\beta_3$:
+
 $H_0$: $\beta_3$ = 0
+
 $H_a$: $\beta_3$ != 0
+
 P-value is 0.0583 then it rejects $H_0$, which means $\beta_3$ is 0.
+
 Hypothesis test for $\beta_4$:
+
 $H_0$: $\beta_4$ = 0
+
 $H_a$: $\beta_4$ != 0
+
 P-value is 1.03e-06 then it supports $H_0$, which means $\beta_4$ is not 0. 
+
 Hypothesis test for $\beta_5$:
+
 $H_0$: $\beta_5$ = 0
+
 $H_a$: $\beta_5$ != 0
+
 P-value is 2.18e-05 then it does not reject $H_0$, which means $\beta_5$ is not 0. 
+
 Hypothesis test for $\beta_6$:
+
 $H_0$: $\beta_6$ = 0
+
 $H_a$: $\beta_6$ != 0
+
 P-value is 0.0442then it does not reject $H_0$, which means $\beta_6$ is not 0. 
+
 Hypothesis test for $\beta_7$:
+
 $H_0$: $\beta_7$ = 0
+
 $H_a$: $\beta_7$ != 0
-P-value is 0.8494 then it rejects $H_0$, which means $\beta_7$ is 0. 
+
+P-value is 0.8494 then it rejects $H_0$, which means $\beta_7$ is 0.
+
 Hypothesis test for $\beta_8$:
+
 $H_0$: $\beta_8$ = 0
+
 $H_a$: $\beta_8$ != 0
+
 P-value is 3.62e-13 then it supports  $H_0$, which means $\beta_8$ is not 0. 
 
 3.
@@ -178,13 +223,17 @@ For those non-numerical variables, we can also use a logistic model to show thei
 
 ## References
 
-1. Jaap. 2018. “remove all or some NAs in the data frame”.      https://stackoverflow.com/questions/4862178/remove-rows-with-all-or-some-nas-missing-values-in-data-frame
+1. Jaap. (2018). remove all or some NAs in the data frame,
+https://stackoverflow.com/questions/4862178/remove-rows-with-all-or- some-nas-missing-values-in-data-frame
 
-2. Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686,
-   https://doi.org/10.21105/joss.01686
+2. Laine Ruus. 2017. General social survey on Family (cycle 31), 2017.https://sda.artsci.utoronto.ca/cgi-bin/sda/hsda?harcsda4+gss31
+
+3. R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
+
+4. Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686
 
 ## Appendix
 
-https://github.com/RubingMai/STA304-ProblemSet-2
+https://github.com/RubingMai/STA304-Problem-set-2
 
 

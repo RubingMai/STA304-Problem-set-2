@@ -1,0 +1,190 @@
+---
+title: "Report of General social survey on Family (cycle 31), 2017"
+author: "Cunmiao Hu; Chengyue Xue; Rubing Mai"
+date: "2020-10-19"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+##Statistical Report of “General social survey on Family (cycle 31), 2017”
+
+# Cunmiao Hu, Chengyue Xue, Rubing Mai
+# 2020-10-19
+
+## Abstract
+
+The data we choose is “General social survey on Family (cycle 31), 2017”. This survey used stratified random sampling and contains 461 variables and 20602 observations. Five variables including feelings_life, total_children, age, sex and income_respondent were chosen to analyze their relationships by using linear regression model and scattorplots. The result is hard to draw from these two methods since the variables are not continuous. From graphs, non-linear relationships were found, but it shows relationships when doing hypothesis tests. In conclusion, maybe we need a more advanced model to do this survey. Some data cannot be explained well by what we are learning now.
+
+## Introduction
+
+1. The goal of this analysis is to see whether there are linear relationships between people’s life feelings and their sex, age, income before tax and the number of children they have by using the data provided by the GSS Cycle 31 which is about family. The variables were chosen as follows.
+
+Dependent variable: “feelings_life” 
+Independent variables: “total_children”, “age”, “sex”, “income_respondent”
+It is roughly predicted that the more children people have and the higher income will lead to a higher life feeling level. Also people in different age and sex will lead to a different feelings about life. 
+
+2. The linear regression model and plots were used to analyze the relationship between those variables. The plots could show the relationship more directly. However, when plotting the data, there is something that captures our attention. Discrete values in variables makes the data points(observations) drawn separately by rows in the graph. No relationship was found between these variables under this condition.
+
+3. Further more information about variables will be explained in the data section. The graph and linear model summary are explained in the model and result sections. Summaries about statistics, tables and graphs and weakness of data are explained in discussion and weakness sections.
+
+## Data
+
+1. The method of sampling used by this survey is stratified random sampling. The population was first sliced into strata according to the different provinces they lived in. A total of 27 strata were created from 10 provinces. Some Census Metropolitan Areas were each considered separate strata. Then a simple random sampling method without replacement was used to collect the data. Respondents were randomly selected from households to take the telephone interview. 
+
+2. The target population of this survey is all individuals who are 15 years old and older in Canada. But those residents of the Yukon, Northwest Territories, and Nunavut and full-time residents of institutions were excluded in this survey. 
+Data frame for this survey was integrated from the lists of telephone numbers in use that are available to Statistics Canada and The Address Register. 
+
+3. The target sample size was 20,000. The actual size was 20,602. The minimum sample size in each province was determined to ensure the acceptable sampling variability.
+
+4. Those interviewers who refused to be interviewed at first and those who did not get the call were re-contacted to encourage their participation. If they were not convenient, then new time slots were arranged. If the respondent was still unable to contact, the weight was adjusted.
+
+5. Using stratified random sampling could reduce bias and variability of results. But obviously, doing the survey is time intensively and costly. The raw data contains 461 variables and 20602 observations. After cleaning, 81 variables were left. Large numbers of variables and observations make it easier to compare the relationship between different variables. However, many variables are not continuous. For example, the variable of feelings about life as a whole. It is using a scale of 0 to 10, which is discrete numbers. Thus, when using plot to explore the relationship between this variable and other variables, you will find the data points are shown separately by rows.
+
+6. The variables we choose to discuss are “feelings_life”, “total_children”, “age”, “sex”, “income_respondent”. 
+
+Dependent variable:
+“feelings_life” represents the feeling of life as a whole right now. It uses a scale of 0 to 10 from “Very dissatisfied” to “Very satisfied”.
+
+Independent variables:	
+“total_children” represents the number of respondent’s children in the household.
+“age” represents the age of the respondent with decimal at time of the survey interview.	
+“sex” represents the sex of respondent.
+“income_respondent” represents the total income of the respondent before tax.
+
+7. There is another variable called “income_family” and it represents the total family income before tax. But due to this analysis focusing on individuals’ feelings about life more, “income_respondent” was chosen instead of “income_family”. 
+
+8. The data contains lots of NA values because some respondents were unable to answer some or all the questions. Thus, before doing analysis, NA values need to be removed.
+
+## Model
+```{r}
+library('tidyverse')
+
+gss <- read_csv("gss.csv")
+df <- gss %>%
+  select(feelings_life, total_children, age, sex, income_respondent) %>%
+  filter(!is.na(feelings_life)) %>%
+  filter(!is.na(total_children)) %>%
+  filter(!is.na(age)) %>%
+  filter(!is.na(sex)) %>%
+  filter(!is.na(income_respondent))
+
+mod <- lm(formula = feelings_life~total_children+age+sex+income_respondent, data = df)
+summary(mod)
+
+df %>%
+  ggplot(aes(x=total_children, y=feelings_life,color=sex)) + geom_point() + geom_smooth(method="lm", se=FALSE)
+
+df %>%
+  ggplot(aes(x=age, y=feelings_life, color=sex)) + geom_point() + geom_smooth(method="lm", se=FALSE)
+
+df %>%
+  ggplot(aes(x=income_respondent, y=feelings_life, color=sex)) + geom_point() + geom_smooth(method="lm", se=FALSE)
+
+
+```
+
+The model we choose for this data set is a linear model with multiple regressions. By using this model, we will be able to find the linear relationship between one indicator-variable and several predictor-variables. Different from a simple linear regression model，the multiple regression model can combine two or more explanatory variables in one model and see how they affect the response variable.The reason why we choose number of children, age, sex, income_respondent as predictor variables is that we think these factors are strongly linked to how we feeling about our life. From the model, the coefficients of the total of children and age are positive, which means these factors have a positive relationship with feelings of life. 
+
+$$Feelings.of.life = 8.1753027+0.0808956\beta_1+0.0013695\beta_2-0.1142954\beta_3+0.1976677\beta4-0.2556258\beta_5-0.1249853\beta_6-0.0127139\beta_7-0.4362002\beta_8$$
+$H_0$: $\beta_0$ = 0
+$H_a$: $\beta_0$ != 0
+
+1. 
+$\b_0$ represents the intercept of the fitted linear regression line. Specifically, when all values of predictor variables, x1,x2,x3,x4 are 0, the average value of feelings of life will be 8.1753027.
+$\b_1$ represents the coefficient of the first independent variable, total_children; It means when the number of children increases 1 unit, the feelings of life score will increase 0.0808956 units on average, given other predictors hold constant. 
+$\b_2$ represents the coefficient of the second independent variable, age; It means when age increases 1 unit, feelings of life will increase 0.0013695 units on average, given other predictors hold constant.
+$\b_3$ represents the coefficient of feelings of life scores for male. It means the difference in average value of Yi between female and male groups. It’s -0.1142954, so we can tell that the females’ average feelings of score is higher than male 's about 0.1142954 units. 
+$\b_4$ represents the coefficient of the income_responent $125,000 and more. The value is 0.1976677 which means the difference in average value of Yi between this group and other groups.
+$\b_5$ represents the coefficient of the income_responent $25,000 to 49.999. The value is -0.2556258 which means the difference in average value of Yi between this group and other groups.
+$\b_6$ represents the coefficient of the income_responent $50,000 to 74.999. The value is -0.249853 which means the difference in average value of Yi between this group and other groups. 
+$\b_7$  represents the coefficient of the income_responent $75,000 to 99.999. The value is -0.0127139 which means the difference in average value of Yi between this group and other groups.
+$\b_8$ represents the coefficient of the income_responent less than 25,000. The value is -0.4362002 which means the difference in average value of Yi between this group and other groups.
+
+2.
+Hypothesis test for $\beta_0$:
+$H_0$: $\beta_0$ = 0  
+$H_a$: $\beta_0$ != 0 
+P-value is less than 2e-16, then can support $H_0$, which means $\beta_0$ is 0.
+Hypothesis test for $\beta_1$:
+$H_0$: $\beta_1$ = 0
+$H_a$: $\beta_1$ != 0
+P-value is 2e-16, then fails to reject $H_0$, which means $\beta_1$ is not 0.
+Hypothesis test for $\beta_2$:
+$H_0$: $\beta_2$ = 0
+$H_a$: $\beta_2$ != 0
+P-value is 0.0583 then it does not reject $H_0$, which means $\beta_2$ is 0.
+Hypothesis test for $\beta_3$:
+$H_0$: $\beta_3$ = 0
+$H_a$: $\beta_3$ != 0
+P-value is 0.0583 then it rejects $H_0$, which means $\beta_3$ is 0.
+Hypothesis test for $\beta_4$:
+$H_0$: $\beta_4$ = 0
+$H_a$: $\beta_4$ != 0
+P-value is 1.03e-06 then it supports $H_0$, which means $\beta_4$ is not 0. 
+Hypothesis test for $\beta_5$:
+$H_0$: $\beta_5$ = 0
+$H_a$: $\beta_5$ != 0
+P-value is 2.18e-05 then it does not reject $H_0$, which means $\beta_5$ is not 0. 
+Hypothesis test for $\beta_6$:
+$H_0$: $\beta_6$ = 0
+$H_a$: $\beta_6$ != 0
+P-value is 0.0442then it does not reject $H_0$, which means $\beta_6$ is not 0. 
+Hypothesis test for $\beta_7$:
+$H_0$: $\beta_7$ = 0
+$H_a$: $\beta_7$ != 0
+P-value is 0.8494 then it rejects $H_0$, which means $\beta_7$ is 0. 
+Hypothesis test for $\beta_8$:
+$H_0$: $\beta_8$ = 0
+$H_a$: $\beta_8$ != 0
+P-value is 3.62e-13 then it supports  $H_0$, which means $\beta_8$ is not 0. 
+
+3.
+$\b_2$ age has the smallest standard error 0.0007232, which means it has the lowest uncertainty. Income_respondent $125,000 and more has the largest standard error, 0.787926. It’s still quite low and in a reasonable region.
+After plotting the relationship of variables, we found they are not linear because the observations are not close to the fitted line. The data points have no pattern. Almost all the data points are outliers under this condition.
+
+
+## Results
+
+There is no linear relationship between variable “feelings_life” and “ total_children”, “age”, “sex” and “income_respondent”. We found they are not linear because the observations are not close to the fitted line. The data points are messy and have no pattern. Almost all the data points are outliers under this condition.
+
+The predictor variables, total_children and income_respondent $125,000 and more has a positive relationship with response variable feelings of life. 
+
+Males' feelings of life is lower than female on average.
+
+## Discussion
+
+The conclusion we draw from the model is that there is no relationship between “life_feelings” and “total_children”, “age”, “sex” and  “income_respondent”. This result is the opposite of what we predicted and cannot validate the prediction.
+
+This data came from the 2017 General Social Survey on the family(cycle 31). This data exists biased that there are lots of non-response values. One of the biases in this data is the large number of non-response. The group made nonresponse adjustments. But there is still a lot of NA values in the data. So the first thing we did before analyzing the data was to remove the NA values of the variables we chose.
+
+Shortcomings or weaknesses: “feelings_life” is about your feelings about life as a whole at the time of interview. That means the respondent’s state at interview will greatly influence their feelings about life. So the data collected will be very emotional, and not accurate, because people’s feelings about life could change next second. Then if we are looking for the relationship between this variable and others, the result will not be very accurate. Also lots of variables are not continuous. For example, “feelings_life” and “income_respondent”. The answer types are intervals and values are discrete. It is easy to collect data in this way, but hard to explore the relationship of this kind of variables with others. Good examples of the graphs are shown in the model section.
+
+# Weaknesses
+
+Non-sampling errors: the survey contains many NA terms which means that some interviewers fail to answer some questions or all questions. For example, some interviewers do not want to provide their age information and the number of children they have, because it involves personal privacy. If we remove NA values, the sample size actually goes down. Thus the survey result would not be very accurate. 
+
+Then a big problem throughout this analysis is that the values of  variables are mostly discrete. This makes it difficult to investigate the relationships of variables. This survey may change the answer categories to continuous type.
+
+
+# Next Steps
+
+The analyzed result does not match our predictions very well which shows that we need to think about some other possibilities. We may choose more other models to analyze the relationship of variables. 
+
+For those non-numerical variables, we can also use a logistic model to show their relationship. 
+
+
+## References
+
+1. Jaap. 2018. “remove all or some NAs in the data frame”.      https://stackoverflow.com/questions/4862178/remove-rows-with-all-or-some-nas-missing-values-in-data-frame
+
+2. Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686,
+   https://doi.org/10.21105/joss.01686
+
+## Appendix
+
+https://github.com/RubingMai/STA304-ProblemSet-2
+
+
